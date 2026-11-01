@@ -8,6 +8,11 @@ from tests.data import REGISTER_URL, REQUIRED_FIELDS_MISSING, USER_ALREADY_EXIST
 class TestCreateUser:
 
     @allure.title("Создание нового пользователя")
+    @allure.description(
+        "Регистрируем пользователя с уникальными email, паролем и именем. Проверяем: "
+        "код ответа 200; success = true; в user вернулись те же email и name; "
+        "accessToken начинается с 'Bearer '; refreshToken не пустой."
+    )
     def test_create_user_success(self, new_user_data):
         response = requests.post(REGISTER_URL, json=new_user_data)
         body = response.json()
@@ -19,6 +24,10 @@ class TestCreateUser:
         assert body["refreshToken"]
 
     @allure.title("Создание пользователя, который уже зарегистрирован")
+    @allure.description(
+        "Повторно регистрируем пользователя с данными уже существующего. Проверяем: "
+        "код ответа 403; тело ответа — success = false и message 'User already exists'."
+    )
     def test_create_existing_user_error(self, created_user):
 
         user_data = {
@@ -32,10 +41,14 @@ class TestCreateUser:
         assert response.json() == {"success": False, "message": USER_ALREADY_EXISTS}
 
     @allure.title("Создание пользователя без обязательного поля: {missing_field}")
+    @allure.description(
+        "Регистрируем пользователя без одного из обязательных полей (email, password или name). "
+        "Проверяем: код ответа 403; тело ответа — success = false и message "
+        "'Email, password and name are required fields'."
+    )
     @pytest.mark.parametrize("missing_field", ["email", "password", "name"])
     def test_create_user_without_required_field_error(self, new_user_data, missing_field):
-        # Копия данных без одного поля. Исходный словарь не меняем:
-        # фикстура использует его после теста для уборки.
+
         user_data = {key: value for key, value in new_user_data.items() if key != missing_field}
         response = requests.post(REGISTER_URL, json=user_data)
 
