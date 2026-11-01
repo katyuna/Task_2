@@ -19,8 +19,6 @@ class TestLoginUser:
         assert body["accessToken"].startswith("Bearer ")
         assert body["refreshToken"]
 
-    # parametrize запускает тест дважды: с неверной почтой и с неверным паролем.
-    # Неверное значение получаем, дописывая "wrong_" в начало настоящего.
     @allure.title("Логин с неверным полем: {wrong_field}")
     @pytest.mark.parametrize("wrong_field", ["email", "password"])
     def test_login_with_wrong_credentials_error(self, created_user, wrong_field):

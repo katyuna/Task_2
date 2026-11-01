@@ -21,14 +21,10 @@ def created_user():
 
 @pytest.fixture
 def new_user_data():
-    # Отдаёт тесту данные ещё НЕ зарегистрированного пользователя:
-    # регистрацию выполняет сам тест.
     user_data = generate_user_data()
 
     yield user_data
 
-    # После теста пробуем войти с этими данными. Если вход удался,
-    # значит, тест создал пользователя, и его нужно удалить.
     response = requests.post(LOGIN_URL, json=user_data)
     if response.status_code == 200:
         access_token = response.json()["accessToken"]
