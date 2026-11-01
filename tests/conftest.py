@@ -1,7 +1,7 @@
 import pytest
 import requests
 
-from tests.data import REGISTER_URL, USER_URL
+from tests.data import LOGIN_URL, REGISTER_URL, USER_URL
 from tests.helpers import generate_user_data
 
 
@@ -17,3 +17,19 @@ def created_user():
     yield {**user_data, "access_token": access_token}
 
     requests.delete(USER_URL, headers={"Authorization": access_token})
+
+
+@pytest.fixture
+def new_user_data():
+    # Отдаёт тесту данные ещё НЕ зарегистрированного пользователя:
+    # регистрацию выполняет сам тест.
+    user_data = generate_user_data()
+
+    yield user_data
+
+    # После теста пробуем войти с этими данными. Если вход удался,
+    # значит, тест создал пользователя, и его нужно удалить.
+    response = requests.post(LOGIN_URL, json=user_data)
+    if response.status_code == 200:
+        access_token = response.json()["accessToken"]
+        requests.delete(USER_URL, headers={"Authorization": access_token})
