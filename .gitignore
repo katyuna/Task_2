@@ -1,0 +1,32 @@
+# Claude Code — локальные файлы, не публикуются
+CLAUDE.md
+CLAUDE.local.md
+.claude/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Виртуальные окружения
+.venv/
+venv/
+env/
+
+# Секреты и переменные окружения
+.env
+.env.*
+
+# IDE / ОС
+.idea/
+.vscode/
+Thumbs.db
+.DS_Store
